@@ -1,5 +1,5 @@
 import { AuthPage } from "@/pages/Auth"
-import { Dashboard } from "@/pages/Dashboard"
+import { AppLayout } from "@/components/layout/AppLayout"
 import { useAuth } from "@/hooks/useAuth"
 
 function App() {
@@ -7,13 +7,13 @@ function App() {
 
   if (loading) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-zinc-950 text-zinc-500">
+      <div className="flex min-h-svh items-center justify-center bg-zinc-950 text-zinc-500 text-sm">
         ...
       </div>
     )
   }
 
-  return session ? <Dashboard /> : <AuthPage />
+  return session ? <AppLayout /> : <AuthPage />
 }
 
 export default App
