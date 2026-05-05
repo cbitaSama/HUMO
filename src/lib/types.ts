@@ -80,6 +80,35 @@ export type Debt = {
   amount_bs: number
   description: string | null
   status: DebtStatus
+  auto_create_transaction: boolean
+  initial_transaction_id: string | null
+  settlement_transaction_id: string | null
+  category_id: string | null
   created_at: string
   settled_at: string | null
+}
+
+export type DebtGroup = {
+  id: string
+  user_id: string
+  title: string
+  description: string | null
+  total_amount_bs: number
+  auto_create_transaction: boolean
+  category_id: string | null
+  initial_transaction_id: string | null
+  created_at: string
+  archived_at: string | null
+}
+
+export type DebtGroupParticipant = {
+  id: string
+  group_id: string
+  user_id: string
+  name: string
+  amount_bs: number
+  status: DebtStatus
+  settlement_transaction_id: string | null
+  settled_at: string | null
+  created_at: string
 }
