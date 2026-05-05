@@ -29,3 +29,25 @@
 /* Hide scrollbar utility */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { scrollbar-width: none; }
+
+/* Atmospheric details */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes pulseRing {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.pulse-ring {
+  animation: pulseRing 1s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* Smooth fields disable transition */
+fieldset { transition: opacity 0.25s cubic-bezier(0.32, 0.72, 0, 1); }

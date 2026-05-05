@@ -5,8 +5,11 @@ import { useEffect, useMemo, useState } from "react"
 import type { Transaction, Category, Payer } from "@/lib/types"
 import { format, isToday, isYesterday } from "date-fns"
 import { es } from "date-fns/locale"
-import { Flame } from "lucide-react"
+import { Flame, Lock } from "lucide-react"
+import { motion } from "framer-motion"
+import { listVariants, itemVariants } from "@/lib/motion"
 import { QuickAddModal } from "@/components/quick-add/QuickAddModal"
+import { loadLockedTxIds } from "@/lib/locks"
 
 type TransactionWithRefs = Transaction & {
   category?: Pick<Category, "name" | "icon" | "color"> | null
@@ -16,10 +19,10 @@ type TransactionWithRefs = Transaction & {
 type Filter = "all" | "expense" | "income" | "humo"
 
 const FILTERS: { id: Filter; label: string }[] = [
-  { id: "all",     label: "Todos"   },
-  { id: "expense", label: "Gastos"  },
-  { id: "income",  label: "Ingresos" },
-  { id: "humo",    label: "Humo 🔥" },
+  { id: "all", label: "Todos" },
+  { id: "expense", label: "Gastos" },
+  { id: "income", label: "Ingresos" },
+  { id: "humo", label: "Humo 🔥" },
 ]
 
 export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
@@ -27,9 +30,11 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
   const [txs, setTxs] = useState<TransactionWithRefs[]>([])
   const [monthExpense, setMonthExpense] = useState(0)
   const [humoThreshold, setHumoThreshold] = useState(20)
+  const [lockedIds, setLockedIds] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<Filter>("all")
   const [editing, setEditing] = useState<TransactionWithRefs | null>(null)
+  const [editingLocked, setEditingLocked] = useState(false)
   const [localKey, setLocalKey] = useState(0)
 
   useEffect(() => {
@@ -41,26 +46,17 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
     const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString()
 
     Promise.all([
-      supabase
-        .from("transactions")
-        .select(`*, category:categories(name, icon, color), payer:payers(name, icon)`)
-        .order("occurred_at", { ascending: false })
-        .limit(200),
-      supabase
-        .from("transactions")
-        .select("amount_bs")
-        .eq("kind", "expense")
-        .gte("occurred_at", monthStart)
-        .lt("occurred_at", monthEnd),
-      supabase
-        .from("profiles")
-        .select("humo_threshold_bs")
-        .eq("id", user.id)
-        .single(),
-    ]).then(([txsRes, monthRes, profileRes]) => {
+      supabase.from("transactions").select(`
+        *, category:categories(name, icon, color), payer:payers(name, icon)
+      `).order("occurred_at", { ascending: false }).limit(200),
+      supabase.from("transactions").select("amount_bs").eq("kind", "expense").gte("occurred_at", monthStart).lt("occurred_at", monthEnd),
+      supabase.from("profiles").select("humo_threshold_bs").eq("id", user.id).single(),
+      loadLockedTxIds(),
+    ]).then(([txsRes, monthRes, profileRes, locks]) => {
       setTxs((txsRes.data as TransactionWithRefs[]) ?? [])
       setMonthExpense((monthRes.data ?? []).reduce((s, r) => s + Number(r.amount_bs), 0))
       if (profileRes.data) setHumoThreshold(Number(profileRes.data.humo_threshold_bs))
+      setLockedIds(locks)
       setLoading(false)
     })
   }, [user, parentKey, localKey])
@@ -94,25 +90,34 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
     return format(d, "EEEE d 'de' MMMM", { locale: es })
   }
 
+  function isLocked(t: TransactionWithRefs): boolean {
+    return !!t.recurring_template_id || lockedIds.has(t.id)
+  }
+
+  function openTx(t: TransactionWithRefs) {
+    setEditingLocked(isLocked(t))
+    setEditing(t)
+  }
+
   return (
     <div className="p-6 max-w-2xl mx-auto md:max-w-5xl md:p-8">
       <h2 className="text-2xl font-bold tracking-tight mb-4">Movimientos</h2>
 
-      {/* Filtros */}
       <div className="flex gap-2 mb-6 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
         {FILTERS.map(f => (
-          <button
+          <motion.button
             key={f.id}
             onClick={() => setFilter(f.id)}
+            whileTap={{ scale: 0.94 }}
             className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium border transition-all active:scale-95 shrink-0",
+              "px-4 py-2 rounded-full text-sm font-medium border transition-all shrink-0",
               filter === f.id
                 ? "bg-zinc-50 text-zinc-950 border-zinc-50"
-                : "bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-zinc-700"
+                : "bg-zinc-900 text-zinc-400 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-800/50"
             )}
           >
             {f.label}
-          </button>
+          </motion.button>
         ))}
       </div>
 
@@ -120,12 +125,8 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
 
       {!loading && filtered.length === 0 && (
         <div className="text-center py-12 text-zinc-500">
-          <p className="text-sm">
-            {filter === "all" ? "Aún no hay movimientos" : "Sin resultados con este filtro"}
-          </p>
-          {filter === "all" && (
-            <p className="text-xs mt-1">Tocá el botón + para empezar</p>
-          )}
+          <p className="text-sm">{filter === "all" ? "Aún no hay movimientos" : "Sin resultados"}</p>
+          {filter === "all" && <p className="text-xs mt-1">Tocá el botón + para empezar</p>}
         </div>
       )}
 
@@ -135,18 +136,27 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
             <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2 capitalize">
               {dayLabel(day)}
             </p>
-            <ul className="space-y-2">
+            <motion.ul
+              variants={listVariants}
+              initial="initial"
+              animate="animate"
+              className="space-y-2"
+            >
               {items.map(t => {
+                const locked = isLocked(t)
                 const isHumo = t.kind === "expense" && Number(t.amount_bs) < humoThreshold
                 const pctOfMonth = monthExpense > 0 && t.kind === "expense"
                   ? (Number(t.amount_bs) / monthExpense) * 100
                   : 0
 
                 return (
-                  <li
+                  <motion.li
                     key={t.id}
-                    onClick={() => setEditing(t)}
-                    className="flex items-center gap-3 p-4 rounded-xl border border-zinc-800 bg-zinc-900 hover:bg-zinc-800/70 active:scale-[0.99] transition-all cursor-pointer"
+                    variants={itemVariants}
+                    whileHover={{ y: -1 }}
+                    whileTap={{ scale: 0.99 }}
+                    onClick={() => openTx(t)}
+                    className="flex items-center gap-3 p-4 rounded-xl border border-zinc-800 bg-zinc-900 hover:bg-zinc-800/70 hover:border-zinc-700 transition-colors cursor-pointer"
                   >
                     <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-lg shrink-0">
                       {t.category?.icon ?? (t.kind === "expense" ? "💸" : "💰")}
@@ -156,6 +166,7 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
                       <div className="flex items-center gap-2">
                         <p className="font-medium truncate">{t.title}</p>
                         {isHumo && <Flame size={12} className="text-orange-400 shrink-0" />}
+                        {locked && <Lock size={10} className="text-purple-400 shrink-0" />}
                       </div>
                       <p className="text-xs text-zinc-500 truncate">
                         {format(new Date(t.occurred_at), "HH:mm")}
@@ -174,10 +185,10 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
                         </p>
                       )}
                     </div>
-                  </li>
+                  </motion.li>
                 )
               })}
-            </ul>
+            </motion.ul>
           </div>
         ))}
       </div>
@@ -187,6 +198,7 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
         onClose={() => setEditing(null)}
         onSaved={() => setLocalKey(k => k + 1)}
         editing={editing}
+        forceLocked={editingLocked}
       />
     </div>
   )
