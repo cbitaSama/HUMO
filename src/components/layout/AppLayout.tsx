@@ -16,21 +16,23 @@ import { Movements } from "@/pages/Movements"
 import { Recurring } from "@/pages/Recurring"
 import { Debts } from "@/pages/Debts"
 import { SettingsPage } from "@/pages/SettingsPage"
+import { FAB } from "@/components/quick-add/FAB"
+import { QuickAddModal } from "@/components/quick-add/QuickAddModal"
 
 type Tab = "dashboard" | "movements" | "recurring" | "debts" | "settings"
 
 const tabs = [
-  { id: "dashboard" as Tab, label: "Inicio",       Icon: LayoutDashboard },
-  { id: "movements" as Tab, label: "Movimientos",  Icon: ArrowLeftRight   },
-  { id: "recurring" as Tab, label: "Recurrentes",  Icon: RefreshCcw       },
-  { id: "debts"     as Tab, label: "Deudas",       Icon: Handshake        },
-  { id: "settings"  as Tab, label: "Ajustes",      Icon: Settings         },
+  { id: "dashboard" as Tab, label: "Inicio",      Icon: LayoutDashboard },
+  { id: "movements" as Tab, label: "Movimientos", Icon: ArrowLeftRight },
+  { id: "recurring" as Tab, label: "Recurrentes", Icon: RefreshCcw },
+  { id: "debts"     as Tab, label: "Deudas",      Icon: Handshake },
+  { id: "settings"  as Tab, label: "Ajustes",     Icon: Settings },
 ]
 
-function PageContent({ tab }: { tab: Tab }) {
+function PageContent({ tab, refreshKey }: { tab: Tab; refreshKey: number }) {
   switch (tab) {
-    case "dashboard":  return <Dashboard />
-    case "movements":  return <Movements />
+    case "dashboard":  return <Dashboard refreshKey={refreshKey} />
+    case "movements":  return <Movements refreshKey={refreshKey} />
     case "recurring":  return <Recurring />
     case "debts":      return <Debts />
     case "settings":   return <SettingsPage />
@@ -39,6 +41,8 @@ function PageContent({ tab }: { tab: Tab }) {
 
 export function AppLayout() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard")
+  const [modalOpen, setModalOpen] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(0)
   const { user } = useAuth()
   const { profile } = useProfile(user?.id)
 
@@ -47,7 +51,6 @@ export function AppLayout() {
   return (
     <div className="flex h-svh bg-zinc-950 text-zinc-50 overflow-hidden">
 
-      {/* SIDEBAR — solo desktop/iPad (md+) */}
       <aside className="hidden md:flex flex-col w-64 border-r border-zinc-800 bg-zinc-950 shrink-0">
         <div className="px-6 py-8 border-b border-zinc-800">
           <h1 className="text-3xl font-bold tracking-tight">Humo</h1>
@@ -83,13 +86,19 @@ export function AppLayout() {
         </div>
       </aside>
 
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
-        <PageContent tab={activeTab} />
+      <main className="flex-1 overflow-y-auto pb-24 md:pb-0">
+        <PageContent tab={activeTab} refreshKey={refreshKey} />
       </main>
 
-      {/* BOTTOM TABS — solo móvil */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-zinc-800 flex z-50">
+      <FAB onClick={() => setModalOpen(true)} />
+
+      <QuickAddModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSaved={() => setRefreshKey(k => k + 1)}
+      />
+
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-zinc-800 flex z-30">
         {tabs.map(({ id, label, Icon }) => (
           <button
             key={id}
