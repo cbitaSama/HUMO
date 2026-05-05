@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   ArrowLeftRight,
   RefreshCcw,
+  Users,
   Handshake,
   Settings,
   LogOut,
@@ -14,28 +15,34 @@ import { useState } from "react"
 import { Dashboard } from "@/pages/Dashboard"
 import { Movements } from "@/pages/Movements"
 import { Recurring } from "@/pages/Recurring"
+import { Payers } from "@/pages/Payers"
 import { Debts } from "@/pages/Debts"
 import { SettingsPage } from "@/pages/SettingsPage"
 import { FAB } from "@/components/quick-add/FAB"
 import { QuickAddModal } from "@/components/quick-add/QuickAddModal"
 
-type Tab = "dashboard" | "movements" | "recurring" | "debts" | "settings"
+type Tab = "dashboard" | "movements" | "recurring" | "payers" | "debts" | "settings"
 
 const tabs = [
-  { id: "dashboard" as Tab, label: "Inicio",      Icon: LayoutDashboard },
-  { id: "movements" as Tab, label: "Movimientos", Icon: ArrowLeftRight },
-  { id: "recurring" as Tab, label: "Recurrentes", Icon: RefreshCcw },
-  { id: "debts"     as Tab, label: "Deudas",      Icon: Handshake },
-  { id: "settings"  as Tab, label: "Ajustes",     Icon: Settings },
+  { id: "dashboard" as Tab, label: "Inicio",      shortLabel: "Inicio",     Icon: LayoutDashboard },
+  { id: "movements" as Tab, label: "Movimientos", shortLabel: "Mov.",       Icon: ArrowLeftRight },
+  { id: "recurring" as Tab, label: "Recurrentes", shortLabel: "Auto",       Icon: RefreshCcw },
+  { id: "payers"    as Tab, label: "Pagadores",   shortLabel: "Pagadores",  Icon: Users },
+  { id: "debts"     as Tab, label: "Deudas",      shortLabel: "Deudas",     Icon: Handshake },
+  { id: "settings"  as Tab, label: "Ajustes",     shortLabel: "Ajustes",    Icon: Settings },
 ]
+
+// En móvil mostramos solo 5 tabs (Inicio, Mov, Auto, Pagadores, +Más)
+const mobileTabs = tabs.filter(t => t.id !== "settings" && t.id !== "debts")
 
 function PageContent({ tab, refreshKey }: { tab: Tab; refreshKey: number }) {
   switch (tab) {
-    case "dashboard":  return <Dashboard refreshKey={refreshKey} />
-    case "movements":  return <Movements refreshKey={refreshKey} />
-    case "recurring":  return <Recurring />
-    case "debts":      return <Debts />
-    case "settings":   return <SettingsPage />
+    case "dashboard": return <Dashboard refreshKey={refreshKey} />
+    case "movements": return <Movements refreshKey={refreshKey} />
+    case "recurring": return <Recurring />
+    case "payers":    return <Payers />
+    case "debts":     return <Debts />
+    case "settings":  return <SettingsPage />
   }
 }
 
@@ -63,9 +70,9 @@ export function AppLayout() {
               key={id}
               onClick={() => setActiveTab(id)}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all active:scale-[0.98]",
                 activeTab === id
-                  ? "bg-zinc-800 text-zinc-50"
+                  ? "bg-zinc-800 text-zinc-50 shadow-inner"
                   : "text-zinc-400 hover:text-zinc-50 hover:bg-zinc-900"
               )}
             >
@@ -78,7 +85,7 @@ export function AppLayout() {
         <div className="px-3 py-4 border-t border-zinc-800">
           <button
             onClick={() => supabase.auth.signOut()}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-zinc-400 hover:text-red-400 hover:bg-zinc-900 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-zinc-400 hover:text-red-400 hover:bg-zinc-900 transition-all active:scale-[0.98]"
           >
             <LogOut size={18} />
             Salir
@@ -98,18 +105,19 @@ export function AppLayout() {
         onSaved={() => setRefreshKey(k => k + 1)}
       />
 
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950 border-t border-zinc-800 flex z-30">
-        {tabs.map(({ id, label, Icon }) => (
+      {/* Bottom tabs móvil */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950/95 backdrop-blur-sm border-t border-zinc-800 flex z-30">
+        {mobileTabs.map(({ id, shortLabel, Icon }) => (
           <button
             key={id}
             onClick={() => setActiveTab(id)}
             className={cn(
-              "flex-1 flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-colors",
+              "flex-1 flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-all active:scale-95",
               activeTab === id ? "text-zinc-50" : "text-zinc-600"
             )}
           >
             <Icon size={20} strokeWidth={activeTab === id ? 2.5 : 1.8} />
-            {label}
+            {shortLabel}
           </button>
         ))}
       </nav>
