@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 import { X, Trash2, Zap } from "lucide-react"
 import { useEffect, useState } from "react"
 import type { Debt, DebtDirection } from "@/lib/types"
-import { createInitialTxForDebt, createSettlementTxForDebt, deleteTxById } from "@/lib/debts"
+import { createInitialTxForDebt, deleteTxById } from "@/lib/debts"
 
 type Props = {
   open: boolean
