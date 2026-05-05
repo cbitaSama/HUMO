@@ -1,23 +1,19 @@
-import { supabase } from "@/lib/supabase"
-import { useEffect, useState } from "react"
+import { AuthPage } from "@/pages/Auth"
+import { Dashboard } from "@/pages/Dashboard"
+import { useAuth } from "@/hooks/useAuth"
 
 function App() {
-  const [status, setStatus] = useState<string>("Conectando...")
+  const { session, loading } = useAuth()
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ error }) => {
-      if (error) setStatus("Error: " + error.message)
-      else setStatus("✓ Conectado a Supabase")
-    })
-  }, [])
+  if (loading) {
+    return (
+      <div className="flex min-h-svh items-center justify-center bg-zinc-950 text-zinc-500">
+        ...
+      </div>
+    )
+  }
 
-  return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-4 bg-zinc-950 text-zinc-50">
-      <h1 className="text-7xl font-bold tracking-tight">Humo</h1>
-      <p className="text-zinc-400 text-lg">No dejes que tu plata se haga humo.</p>
-      <p className="text-sm text-zinc-500 mt-8">{status}</p>
-    </div>
-  )
+  return session ? <Dashboard /> : <AuthPage />
 }
 
 export default App
