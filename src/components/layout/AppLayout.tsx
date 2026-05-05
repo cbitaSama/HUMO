@@ -10,6 +10,8 @@ import {
   Handshake,
   Settings,
   LogOut,
+  MoreHorizontal,
+  X,
 } from "lucide-react"
 import { useState } from "react"
 import { Dashboard } from "@/pages/Dashboard"
@@ -24,16 +26,15 @@ import { QuickAddModal } from "@/components/quick-add/QuickAddModal"
 type Tab = "dashboard" | "movements" | "recurring" | "payers" | "debts" | "settings"
 
 const tabs = [
-  { id: "dashboard" as Tab, label: "Inicio",      shortLabel: "Inicio",     Icon: LayoutDashboard },
-  { id: "movements" as Tab, label: "Movimientos", shortLabel: "Mov.",       Icon: ArrowLeftRight },
-  { id: "recurring" as Tab, label: "Recurrentes", shortLabel: "Auto",       Icon: RefreshCcw },
-  { id: "payers"    as Tab, label: "Pagadores",   shortLabel: "Pagadores",  Icon: Users },
-  { id: "debts"     as Tab, label: "Deudas",      shortLabel: "Deudas",     Icon: Handshake },
-  { id: "settings"  as Tab, label: "Ajustes",     shortLabel: "Ajustes",    Icon: Settings },
+  { id: "dashboard" as Tab, label: "Inicio",      shortLabel: "Inicio",  Icon: LayoutDashboard },
+  { id: "movements" as Tab, label: "Movimientos", shortLabel: "Mov.",    Icon: ArrowLeftRight },
+  { id: "recurring" as Tab, label: "Recurrentes", shortLabel: "Auto",    Icon: RefreshCcw },
+  { id: "payers"    as Tab, label: "Pagadores",   shortLabel: "Pagad.",  Icon: Users },
+  { id: "debts"     as Tab, label: "Deudas",      shortLabel: "Deudas",  Icon: Handshake },
+  { id: "settings"  as Tab, label: "Ajustes",     shortLabel: "Más",     Icon: Settings },
 ]
 
-// En móvil mostramos solo 5 tabs (Inicio, Mov, Auto, Pagadores, +Más)
-const mobileTabs = tabs.filter(t => t.id !== "settings" && t.id !== "debts")
+const mobileMain: Tab[] = ["dashboard", "movements", "payers", "debts"]
 
 function PageContent({ tab, refreshKey }: { tab: Tab; refreshKey: number }) {
   switch (tab) {
@@ -49,11 +50,17 @@ function PageContent({ tab, refreshKey }: { tab: Tab; refreshKey: number }) {
 export function AppLayout() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard")
   const [modalOpen, setModalOpen] = useState(false)
+  const [moreOpen, setMoreOpen] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   const { user } = useAuth()
   const { profile } = useProfile(user?.id)
 
   const firstName = profile?.display_name?.split(" ")[0] ?? user?.email?.split("@")[0] ?? ""
+
+  function pickTab(t: Tab) {
+    setActiveTab(t)
+    setMoreOpen(false)
+  }
 
   return (
     <div className="flex h-svh bg-zinc-950 text-zinc-50 overflow-hidden">
@@ -68,7 +75,7 @@ export function AppLayout() {
           {tabs.map(({ id, label, Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id)}
+              onClick={() => pickTab(id)}
               className={cn(
                 "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all active:scale-[0.98]",
                 activeTab === id
@@ -105,12 +112,12 @@ export function AppLayout() {
         onSaved={() => setRefreshKey(k => k + 1)}
       />
 
-      {/* Bottom tabs móvil */}
+      {/* Bottom tabs móvil — 4 fijos + Más */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950/95 backdrop-blur-sm border-t border-zinc-800 flex z-30">
-        {mobileTabs.map(({ id, shortLabel, Icon }) => (
+        {tabs.filter(t => mobileMain.includes(t.id)).map(({ id, shortLabel, Icon }) => (
           <button
             key={id}
-            onClick={() => setActiveTab(id)}
+            onClick={() => pickTab(id)}
             className={cn(
               "flex-1 flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-all active:scale-95",
               activeTab === id ? "text-zinc-50" : "text-zinc-600"
@@ -120,7 +127,62 @@ export function AppLayout() {
             {shortLabel}
           </button>
         ))}
+        <button
+          onClick={() => setMoreOpen(true)}
+          className={cn(
+            "flex-1 flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-all active:scale-95",
+            (activeTab === "recurring" || activeTab === "settings") ? "text-zinc-50" : "text-zinc-600"
+          )}
+        >
+          <MoreHorizontal size={20} strokeWidth={1.8} />
+          Más
+        </button>
       </nav>
+
+      {/* Sheet "Más" */}
+      {moreOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40 bg-black/70 backdrop-blur-sm flex items-end"
+          onClick={() => setMoreOpen(false)}
+        >
+          <div
+            className="w-full bg-zinc-950 border-t border-zinc-800 rounded-t-3xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex justify-center pt-3">
+              <div className="w-10 h-1 rounded-full bg-zinc-700" />
+            </div>
+            <div className="flex items-center justify-between px-6 py-4">
+              <h3 className="text-lg font-semibold">Más</h3>
+              <button onClick={() => setMoreOpen(false)} className="text-zinc-500 active:scale-90 transition">
+                <X size={20} />
+              </button>
+            </div>
+            <nav className="px-3 pb-6 space-y-1">
+              {tabs.filter(t => !mobileMain.includes(t.id)).map(({ id, label, Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => pickTab(id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium transition-all active:scale-[0.98]",
+                    activeTab === id ? "bg-zinc-800 text-zinc-50" : "text-zinc-300 hover:bg-zinc-900"
+                  )}
+                >
+                  <Icon size={18} />
+                  {label}
+                </button>
+              ))}
+              <button
+                onClick={() => { supabase.auth.signOut(); setMoreOpen(false) }}
+                className="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium text-red-400 hover:bg-zinc-900 transition-all active:scale-[0.98] mt-2"
+              >
+                <LogOut size={18} />
+                Salir
+              </button>
+            </nav>
+          </div>
+        </div>
+      )}
 
     </div>
   )
