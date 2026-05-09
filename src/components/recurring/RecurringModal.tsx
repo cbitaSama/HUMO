@@ -7,7 +7,8 @@ import { Trash2 } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { motion } from "framer-motion"
 import { Sheet } from "@/components/Sheet"
-import type { TransactionKind, RecurringTemplate, Frequency } from "@/lib/types"
+import type { TransactionKind, RecurringTemplate } from "@/lib/types"
+type Frequency = "daily" | "weekly" | "monthly" | "yearly"
 
 type Props = {
   open: boolean
