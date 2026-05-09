@@ -3,7 +3,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { useCategories } from "@/hooks/useCategories"
 import { usePayers } from "@/hooks/usePayers"
 import { cn } from "@/lib/utils"
-import { Trash2, Lock, Zap, RefreshCcw } from "lucide-react"
+import { Trash2, Lock, Zap, RefreshCcw, PiggyBank } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Sheet } from "@/components/Sheet"
@@ -13,6 +13,7 @@ type LinkInfo =
   | { kind: "recurring"; templateTitle: string }
   | { kind: "debt"; debtId: string; counterparty: string; isInitial: boolean }
   | { kind: "group"; groupId: string; groupTitle: string; participantName?: string; isInitial: boolean }
+  | { kind: "savings"; goalName: string; goalEmoji: string; direction: "deposit" | "withdraw" }
 
 type Props = {
   open: boolean
@@ -63,6 +64,23 @@ export function QuickAddModal({ open, onClose, onSaved, editing, forceLocked }: 
         setLinkInfo({ kind: "recurring", templateTitle: data?.title ?? "Recurrente" })
         setLoadingLink(false); return
       }
+
+      // Savings movement
+      const { data: svRow } = await supabase.from("savings_movements")
+        .select("direction, goal:savings_goals(name, emoji)")
+        .eq("transaction_id", editing!.id)
+        .maybeSingle()
+      if (svRow) {
+        const goal = (svRow as any).goal
+        setLinkInfo({
+          kind: "savings",
+          goalName: goal?.name ?? "Meta",
+          goalEmoji: goal?.emoji ?? "💰",
+          direction: svRow.direction as "deposit" | "withdraw",
+        })
+        setLoadingLink(false); return
+      }
+
       const { data: debtRows } = await supabase.from("debts")
         .select("id, counterparty_name, initial_transaction_id, settlement_transaction_id")
         .or(`initial_transaction_id.eq.${editing!.id},settlement_transaction_id.eq.${editing!.id}`)
@@ -170,8 +188,7 @@ export function QuickAddModal({ open, onClose, onSaved, editing, forceLocked }: 
 
   return (
     <Sheet
-      open={open}
-      onClose={onClose}
+      open={open} onClose={onClose}
       title={editing ? (isLocked ? "Movimiento vinculado" : "Editar movimiento") : "Nuevo movimiento"}
       footer={footer}
     >
@@ -187,7 +204,11 @@ export function QuickAddModal({ open, onClose, onSaved, editing, forceLocked }: 
             <div className="rounded-xl border border-purple-500/30 bg-purple-500/10 p-4">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-lg bg-purple-500/20 flex items-center justify-center shrink-0">
-                  {linkInfo?.kind === "recurring" ? <RefreshCcw size={16} className="text-purple-300" /> : <Zap size={16} className="text-purple-300" />}
+                  {linkInfo?.kind === "recurring"
+                    ? <RefreshCcw size={16} className="text-purple-300" />
+                    : linkInfo?.kind === "savings"
+                    ? <PiggyBank size={16} className="text-purple-300" />
+                    : <Zap size={16} className="text-purple-300" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-1">
@@ -203,6 +224,17 @@ export function QuickAddModal({ open, onClose, onSaved, editing, forceLocked }: 
                     <>
                       <p className="text-sm text-zinc-200 font-medium truncate">{linkInfo.templateTitle}</p>
                       <p className="text-xs text-zinc-400 mt-0.5">Generado por un recurrente. Editalo desde Recurrentes.</p>
+                    </>
+                  ) : linkInfo?.kind === "savings" ? (
+                    <>
+                      <p className="text-sm text-zinc-200 font-medium truncate">
+                        {linkInfo.goalEmoji} {linkInfo.goalName}
+                      </p>
+                      <p className="text-xs text-zinc-400 mt-0.5">
+                        {linkInfo.direction === "deposit"
+                          ? "Depósito a tu meta de ahorro. Para deshacerlo, eliminá el movimiento desde Ahorros."
+                          : "Retiro de tu meta de ahorro. Editalo desde la pestaña Ahorros."}
+                      </p>
                     </>
                   ) : linkInfo?.kind === "debt" ? (
                     <>

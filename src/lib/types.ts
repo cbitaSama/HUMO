@@ -112,3 +112,28 @@ export type DebtGroupParticipant = {
   settled_at: string | null
   created_at: string
 }
+
+export type SavingsGoal = {
+  id: string
+  user_id: string
+  name: string
+  emoji: string
+  color: string
+  target_amount_bs: number | null
+  target_date: string | null
+  is_default: boolean
+  archived_at: string | null
+  created_at: string
+}
+
+export type SavingsMovement = {
+  id: string
+  user_id: string
+  goal_id: string
+  direction: "deposit" | "withdraw"
+  amount_bs: number
+  note: string | null
+  occurred_at: string
+  transaction_id: string | null
+  created_at: string
+}

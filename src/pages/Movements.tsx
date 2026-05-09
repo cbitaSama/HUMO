@@ -5,30 +5,33 @@ import { useEffect, useMemo, useState } from "react"
 import type { Transaction, Category, Payer } from "@/lib/types"
 import { format, isToday, isYesterday } from "date-fns"
 import { es } from "date-fns/locale"
-import { Flame, Lock } from "lucide-react"
+import { Flame, Lock, PiggyBank } from "lucide-react"
 import { motion } from "framer-motion"
 import { listVariants, itemVariants } from "@/lib/motion"
 import { QuickAddModal } from "@/components/quick-add/QuickAddModal"
 import { loadLockedTxIds } from "@/lib/locks"
 
+type CategoryWithSavings = Category & { is_savings: boolean }
+
 type TransactionWithRefs = Transaction & {
-  category?: Pick<Category, "name" | "icon" | "color"> | null
+  category?: Pick<CategoryWithSavings, "name" | "icon" | "color" | "is_savings"> | null
   payer?: Pick<Payer, "name" | "icon"> | null
 }
 
-type Filter = "all" | "expense" | "income" | "humo"
+type Filter = "all" | "expense" | "income" | "humo" | "savings"
 
 const FILTERS: { id: Filter; label: string }[] = [
-  { id: "all", label: "Todos" },
+  { id: "all",     label: "Todos" },
   { id: "expense", label: "Gastos" },
-  { id: "income", label: "Ingresos" },
-  { id: "humo", label: "Humo 🔥" },
+  { id: "income",  label: "Ingresos" },
+  { id: "humo",    label: "Humo 🔥" },
+  { id: "savings", label: "Ahorros 🏦" },
 ]
 
 export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
   const { user } = useAuth()
   const [txs, setTxs] = useState<TransactionWithRefs[]>([])
-  const [monthExpense, setMonthExpense] = useState(0)
+  const [monthRealExpense, setMonthRealExpense] = useState(0)
   const [humoThreshold, setHumoThreshold] = useState(20)
   const [lockedIds, setLockedIds] = useState<Set<string>>(new Set())
   const [loading, setLoading] = useState(true)
@@ -47,14 +50,20 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
 
     Promise.all([
       supabase.from("transactions").select(`
-        *, category:categories(name, icon, color), payer:payers(name, icon)
+        *, category:categories(name, icon, color, is_savings), payer:payers(name, icon)
       `).order("occurred_at", { ascending: false }).limit(200),
-      supabase.from("transactions").select("amount_bs").eq("kind", "expense").gte("occurred_at", monthStart).lt("occurred_at", monthEnd),
+      supabase.from("transactions").select(`amount_bs, category:categories(is_savings)`)
+        .eq("kind", "expense")
+        .gte("occurred_at", monthStart).lt("occurred_at", monthEnd),
       supabase.from("profiles").select("humo_threshold_bs").eq("id", user.id).single(),
       loadLockedTxIds(),
     ]).then(([txsRes, monthRes, profileRes, locks]) => {
       setTxs((txsRes.data as TransactionWithRefs[]) ?? [])
-      setMonthExpense((monthRes.data ?? []).reduce((s, r) => s + Number(r.amount_bs), 0))
+      const monthData = (monthRes.data as any[]) ?? []
+      const realExp = monthData
+        .filter(r => !r.category?.is_savings)
+        .reduce((s, r) => s + Number(r.amount_bs), 0)
+      setMonthRealExpense(realExp)
       if (profileRes.data) setHumoThreshold(Number(profileRes.data.humo_threshold_bs))
       setLockedIds(locks)
       setLoading(false)
@@ -65,7 +74,10 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
     switch (filter) {
       case "expense": return txs.filter(t => t.kind === "expense")
       case "income":  return txs.filter(t => t.kind === "income")
-      case "humo":    return txs.filter(t => t.kind === "expense" && Number(t.amount_bs) < humoThreshold)
+      case "humo":    return txs.filter(t =>
+        t.kind === "expense" && Number(t.amount_bs) < humoThreshold && !t.category?.is_savings
+      )
+      case "savings": return txs.filter(t => t.category?.is_savings === true)
       default:        return txs
     }
   }, [txs, filter, humoThreshold])
@@ -79,8 +91,7 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
       map.set(day, arr)
     }
     return Array.from(map.entries()).map(([day, items]) => ({
-      day: new Date(day + "T12:00:00"),
-      items,
+      day: new Date(day + "T12:00:00"), items,
     }))
   }, [filtered])
 
@@ -144,9 +155,10 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
             >
               {items.map(t => {
                 const locked = isLocked(t)
-                const isHumo = t.kind === "expense" && Number(t.amount_bs) < humoThreshold
-                const pctOfMonth = monthExpense > 0 && t.kind === "expense"
-                  ? (Number(t.amount_bs) / monthExpense) * 100
+                const isSavings = t.category?.is_savings === true
+                const isHumo = t.kind === "expense" && Number(t.amount_bs) < humoThreshold && !isSavings
+                const pctOfMonth = monthRealExpense > 0 && t.kind === "expense" && !isSavings
+                  ? (Number(t.amount_bs) / monthRealExpense) * 100
                   : 0
 
                 return (
@@ -165,6 +177,7 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="font-medium truncate">{t.title}</p>
+                        {isSavings && <PiggyBank size={11} className="text-emerald-400 shrink-0" />}
                         {isHumo && <Flame size={12} className="text-orange-400 shrink-0" />}
                         {locked && <Lock size={10} className="text-purple-400 shrink-0" />}
                       </div>
