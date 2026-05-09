@@ -244,7 +244,7 @@ export function SharedDebtModal({ open, onClose, onSaved, editing }: Props) {
               type="text" required
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600"
               placeholder="Cena del viernes, viaje, alquiler..."
               autoFocus={!editing}
             />
@@ -256,7 +256,7 @@ export function SharedDebtModal({ open, onClose, onSaved, editing }: Props) {
               type="text" inputMode="decimal" required
               value={total}
               onChange={e => setTotal(e.target.value.replace(/[^0-9.,]/g, ""))}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-4 text-3xl font-bold tracking-tight outline-none focus:border-zinc-600"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-4 text-3xl font-bold tracking-tight outline-none focus:border-zinc-600"
               placeholder="0,00"
             />
           </div>
@@ -302,7 +302,7 @@ export function SharedDebtModal({ open, onClose, onSaved, editing }: Props) {
                 value={newName}
                 onChange={e => setNewName(e.target.value)}
                 onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addParticipant() } }}
-                className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm outline-none focus:border-zinc-600"
+                className="flex-1 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-2.5 text-sm outline-none focus:border-zinc-600"
                 placeholder="Nombre de quien te debe + Enter"
               />
               <button
@@ -323,14 +323,14 @@ export function SharedDebtModal({ open, onClose, onSaved, editing }: Props) {
                     type="text"
                     value={p.name}
                     onChange={e => updatePart(p.id, "name", e.target.value)}
-                    className="flex-1 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm outline-none focus:border-zinc-600"
+                    className="flex-1 rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-50 px-3 py-2 text-sm outline-none focus:border-zinc-600"
                   />
                   <div className="relative w-24">
                     <input
                       type="text" inputMode="decimal"
                       value={p.amount}
                       onChange={e => updatePart(p.id, "amount", e.target.value.replace(/[^0-9.,]/g, ""))}
-                      className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm tabular-nums outline-none focus:border-zinc-600 pr-8"
+                      className="w-full rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-50 px-3 py-2 text-sm tabular-nums outline-none focus:border-zinc-600 pr-8"
                       placeholder="0,00"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-zinc-600">Bs</span>
@@ -387,7 +387,7 @@ export function SharedDebtModal({ open, onClose, onSaved, editing }: Props) {
               type="text"
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm outline-none focus:border-zinc-600"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-sm outline-none focus:border-zinc-600"
               placeholder="Detalles..."
             />
           </div>

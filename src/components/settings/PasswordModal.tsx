@@ -74,18 +74,18 @@ export function PasswordModal({ open, onClose, email }: Props) {
           <div>
             <label className="text-xs font-medium text-zinc-400">Contraseña actual</label>
             <input type="password" required autoFocus value={current} onChange={e => setCurrent(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 outline-none focus:border-zinc-600 transition-colors" />
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 outline-none focus:border-zinc-600 transition-colors" />
           </div>
           <div>
             <label className="text-xs font-medium text-zinc-400">Nueva contraseña</label>
             <input type="password" required value={next} onChange={e => setNext(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 outline-none focus:border-zinc-600 transition-colors"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 outline-none focus:border-zinc-600 transition-colors"
               placeholder="Mín. 8, una mayúscula, un número" />
           </div>
           <div>
             <label className="text-xs font-medium text-zinc-400">Repetir nueva</label>
             <input type="password" required value={confirm} onChange={e => setConfirm(e.target.value)}
-              className={`mt-1 w-full rounded-xl border bg-zinc-900 px-4 py-3 outline-none transition-colors ${
+              className={`mt-1 w-full rounded-xl border bg-zinc-900 text-zinc-50 px-4 py-3 outline-none transition-colors ${
                 confirm.length > 0 && confirm !== next
                   ? "border-red-800 focus:border-red-600"
                   : "border-zinc-800 focus:border-zinc-600"

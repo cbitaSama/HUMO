@@ -73,7 +73,7 @@ export function PayerModal({ open, onClose, onSaved, editing }: Props) {
         <div>
           <label className="text-xs font-medium text-zinc-400">Nombre</label>
           <input type="text" required value={name} onChange={e => setName(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
+            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
             placeholder="Tía María, Hermano, Pareja..." autoFocus />
         </div>
 

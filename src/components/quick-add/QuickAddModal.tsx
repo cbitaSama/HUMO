@@ -250,7 +250,7 @@ export function QuickAddModal({ open, onClose, onSaved, editing, forceLocked }: 
             <label className="text-xs font-medium text-zinc-400">Monto (Bs)</label>
             <input type="text" inputMode="decimal" required value={amount}
               onChange={e => setAmount(e.target.value.replace(/[^0-9.,]/g, ""))}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-4 text-3xl font-bold tracking-tight outline-none focus:border-zinc-600 transition-colors"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-4 text-3xl font-bold tracking-tight outline-none focus:border-zinc-600 transition-colors"
               placeholder="0,00" autoFocus={!editing} />
           </div>
 
@@ -258,7 +258,7 @@ export function QuickAddModal({ open, onClose, onSaved, editing, forceLocked }: 
             <label className="text-xs font-medium text-zinc-400">¿Qué?</label>
             <input type="text" required value={title}
               onChange={e => setTitle(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
               placeholder={kind === "expense" ? "Almuerzo, Uber, café..." : "Mesada, sueldo..."} />
           </div>
 
@@ -266,7 +266,7 @@ export function QuickAddModal({ open, onClose, onSaved, editing, forceLocked }: 
             <label className="text-xs font-medium text-zinc-400">Fecha y hora</label>
             <input type="datetime-local" value={occurredAt}
               onChange={e => setOccurredAt(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors [color-scheme:dark]" />
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors [color-scheme:dark]" />
           </div>
 
           {kind === "expense" && (
@@ -303,7 +303,7 @@ export function QuickAddModal({ open, onClose, onSaved, editing, forceLocked }: 
           <div>
             <label className="text-xs font-medium text-zinc-400">Nota (opcional)</label>
             <input type="text" value={note} onChange={e => setNote(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm outline-none focus:border-zinc-600 transition-colors"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-sm outline-none focus:border-zinc-600 transition-colors"
               placeholder="Detalles..." />
           </div>
         </fieldset>

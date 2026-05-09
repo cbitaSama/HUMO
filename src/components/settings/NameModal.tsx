@@ -39,7 +39,7 @@ export function NameModal({ open, onClose, current, userId, onSaved }: Props) {
       <form onSubmit={save} className="space-y-4">
         <input
           autoFocus value={name} onChange={e => setName(e.target.value)}
-          className="w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
+          className="w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
           placeholder="Tu nombre completo"
         />
         {error && <p className="rounded-xl bg-red-950 border border-red-900 px-4 py-3 text-sm text-red-400">{error}</p>}

@@ -3,29 +3,19 @@
 @keyframes contentIn {
   0%   { opacity: 0; transform: scale(1.025); filter: blur(2px); }
   100% { opacity: 1; transform: scale(1); filter: blur(0); }
-}
-
 @keyframes logoIn {
   0%   { opacity: 0; transform: scale(0.94); letter-spacing: -0.05em; }
   100% { opacity: 1; transform: scale(1); letter-spacing: -0.025em; }
-}
-
 @keyframes subIn {
   0%   { opacity: 0; transform: translateY(6px); letter-spacing: 0.18em; }
   100% { opacity: 1; transform: translateY(0); letter-spacing: 0.4em; }
-}
-
 @keyframes smoke {
   0%   { transform: translateY(100%); opacity: 0; }
   50%  { opacity: 1; }
   100% { transform: translateY(-100%); opacity: 0; }
-}
-
 @keyframes glowBreath {
   0%, 100% { opacity: 0.4; transform: translate(-50%, 0) scale(1); }
   50%      { opacity: 0.6; transform: translate(-50%, 0) scale(1.08); }
-}
-
 /* Hide scrollbar utility */
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { scrollbar-width: none; }
@@ -39,27 +29,27 @@
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
-}
-
 @keyframes pulseRing {
   0% { transform: scale(0.95); opacity: 0.8; }
   100% { transform: scale(1.6); opacity: 0; }
 }
 .pulse-ring {
   animation: pulseRing 1s cubic-bezier(0.32, 0.72, 0, 1) forwards;
-}
-
 /* Smooth fields disable transition */
 fieldset { transition: opacity 0.25s cubic-bezier(0.32, 0.72, 0, 1); }
 
-/* Inputs siempre con texto blanco en dark mode */
-input, textarea, select {
-  color: inherit;
-  caret-color: #f4f4f5;
+}
+
+/* Fallback: forzar texto visible en cualquier input dentro del app */
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+  color: #fafafa !important;
+  -webkit-text-fill-color: #fafafa;
+  caret-color: #fafafa;
 }
 input::placeholder, textarea::placeholder {
-  color: #52525b;
-}
-input[type="date"], input[type="datetime-local"], input[type="time"] {
-  color-scheme: dark;
+  color: #71717a !important;
+  -webkit-text-fill-color: #71717a;
+  opacity: 1;
 }

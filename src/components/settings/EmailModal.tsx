@@ -62,13 +62,13 @@ export function EmailModal({ open, onClose, current }: Props) {
           <div>
             <label className="text-xs font-medium text-zinc-400">Nuevo email</label>
             <input type="email" required autoFocus value={next} onChange={e => setNext(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 outline-none focus:border-zinc-600 transition-colors"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 outline-none focus:border-zinc-600 transition-colors"
               placeholder="nuevo@email.com" autoComplete="email" />
           </div>
           <div>
             <label className="text-xs font-medium text-zinc-400">Contraseña actual (verificación)</label>
             <input type="password" required value={password} onChange={e => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 outline-none focus:border-zinc-600 transition-colors"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 outline-none focus:border-zinc-600 transition-colors"
               autoComplete="current-password" />
           </div>
           {error && <p className="rounded-xl bg-red-950 border border-red-900 px-4 py-3 text-sm text-red-400">{error}</p>}

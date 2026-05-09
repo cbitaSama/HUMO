@@ -106,7 +106,7 @@ export function ResetAccountModal({ open, onClose, email, onReset }: Props) {
             <label className="text-xs font-medium text-zinc-400">Para confirmar, escribí tu email:</label>
             <p className="text-[11px] text-zinc-600 mt-0.5 mb-2">{email}</p>
             <input type="email" value={confirmInput} onChange={e => setConfirmInput(e.target.value)}
-              className={`w-full rounded-xl border bg-zinc-900 px-4 py-3 text-sm outline-none transition-colors ${
+              className={`w-full rounded-xl border bg-zinc-900 text-zinc-50 px-4 py-3 text-sm outline-none transition-colors ${
                 matches ? "border-emerald-500/40 focus:border-emerald-500"
                         : confirmInput.length > 0 ? "border-amber-800 focus:border-amber-600"
                         : "border-zinc-800 focus:border-zinc-600"

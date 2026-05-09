@@ -164,7 +164,7 @@ export function RecurringModal({ open, onClose, onSaved, editing }: Props) {
           <label className="text-xs font-medium text-zinc-400">Monto (Bs)</label>
           <input type="text" inputMode="decimal" required value={amount}
             onChange={e => setAmount(e.target.value.replace(/[^0-9.,]/g, ""))}
-            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-4 text-3xl font-bold tracking-tight outline-none focus:border-zinc-600 transition-colors"
+            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-4 text-3xl font-bold tracking-tight outline-none focus:border-zinc-600 transition-colors"
             placeholder="0,00" autoFocus={!editing} />
         </div>
 
@@ -172,7 +172,7 @@ export function RecurringModal({ open, onClose, onSaved, editing }: Props) {
           <label className="text-xs font-medium text-zinc-400">¿Qué?</label>
           <input type="text" required value={title}
             onChange={e => setTitle(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
+            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
             placeholder="Alquiler, Mesada, Gym..." />
         </div>
 
@@ -196,7 +196,7 @@ export function RecurringModal({ open, onClose, onSaved, editing }: Props) {
             <label className="text-xs font-medium text-zinc-400">Día del mes</label>
             <input type="number" min={1} max={28} required value={dayOfMonth}
               onChange={e => setDayOfMonth(Math.min(28, Math.max(1, Number(e.target.value) || 1)))}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors"
             />
             <p className="text-[11px] text-zinc-600 mt-1.5 leading-snug">
               Días 29-31 no disponibles para evitar problemas en febrero
@@ -208,7 +208,7 @@ export function RecurringModal({ open, onClose, onSaved, editing }: Props) {
           <label className="text-xs font-medium text-zinc-400">Empieza desde</label>
           <input type="date" required value={startDate}
             onChange={e => setStartDate(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors [color-scheme:dark]"
+            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600 transition-colors [color-scheme:dark]"
           />
         </div>
 
@@ -248,7 +248,7 @@ export function RecurringModal({ open, onClose, onSaved, editing }: Props) {
         <div>
           <label className="text-xs font-medium text-zinc-400">Nota (opcional)</label>
           <input type="text" value={note} onChange={e => setNote(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm outline-none focus:border-zinc-600 transition-colors"
+            className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-sm outline-none focus:border-zinc-600 transition-colors"
             placeholder="Detalles..." />
         </div>
 

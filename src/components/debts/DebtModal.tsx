@@ -160,7 +160,7 @@ export function DebtModal({ open, onClose, onSaved, editing }: Props) {
               type="text" inputMode="decimal" required
               value={amount}
               onChange={e => setAmount(e.target.value.replace(/[^0-9.,]/g, ""))}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-4 text-3xl font-bold tracking-tight outline-none focus:border-zinc-600"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-4 text-3xl font-bold tracking-tight outline-none focus:border-zinc-600"
               placeholder="0,00"
               autoFocus={!editing}
             />
@@ -174,7 +174,7 @@ export function DebtModal({ open, onClose, onSaved, editing }: Props) {
               type="text" required
               value={counterparty}
               onChange={e => setCounterparty(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-base outline-none focus:border-zinc-600"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-base outline-none focus:border-zinc-600"
               placeholder="Nombre"
             />
           </div>
@@ -185,7 +185,7 @@ export function DebtModal({ open, onClose, onSaved, editing }: Props) {
               type="text"
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm outline-none focus:border-zinc-600"
+              className="mt-1 w-full rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-50 px-4 py-3 text-sm outline-none focus:border-zinc-600"
               placeholder="Préstamo en efectivo, etc."
             />
           </div>
