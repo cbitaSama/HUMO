@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { X } from "lucide-react"
 import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
 import { cn } from "@/lib/utils"
 
 const sheetMobile = {
@@ -44,28 +45,32 @@ type Props = {
 
 /**
  * Sheet — bottom sheet en mobile, modal centrado en desktop.
- *
- * Layout: header sticky · body scrollable · footer sticky
- * El body siempre tiene altura intrínseca al contenido hasta máx 92vh.
- * Footer es opcional pero recomendado: ahí van los botones de acción
- * para que NUNCA se corten ni se pierdan abajo del scroll.
+ * Usa createPortal a document.body para escapar el flow del DOM
+ * y NO heredar limitaciones de altura/overflow del padre.
  */
 export function Sheet({ open, onClose, title, children, footer }: Props) {
   const isDesktop = useIsDesktop()
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : ""
+    if (open) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
     return () => { document.body.style.overflow = "" }
   }, [open])
 
-  return (
+  if (typeof document === "undefined") return null
+
+  const content = (
     <AnimatePresence>
       {open && (
         <motion.div
           variants={backdropVariants}
           initial="initial" animate="animate" exit="exit"
           onClick={onClose}
-          className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm"
+          style={{ height: "100dvh" }}
         >
           <motion.div
             variants={isDesktop ? sheetDesktop : sheetMobile}
@@ -79,12 +84,10 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
             )}
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
           >
-            {/* Handle (mobile) */}
             <div className="md:hidden flex justify-center pt-3 pb-1 shrink-0">
               <div className="w-10 h-1 rounded-full bg-zinc-700" />
             </div>
 
-            {/* Header — sticky */}
             <div className="flex items-center justify-between px-6 py-4 shrink-0 border-b border-zinc-900">
               <h2 className="text-lg font-semibold">{title}</h2>
               <motion.button
@@ -96,12 +99,10 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
               </motion.button>
             </div>
 
-            {/* Body — scrollable */}
             <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-5 min-h-0">
               {children}
             </div>
 
-            {/* Footer — sticky con fade arriba para indicar scroll */}
             {footer && (
               <div className="shrink-0 px-6 pt-3 pb-5 border-t border-zinc-900 bg-zinc-950">
                 {footer}
@@ -112,4 +113,6 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
       )}
     </AnimatePresence>
   )
+
+  return createPortal(content, document.body)
 }
