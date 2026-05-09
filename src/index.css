@@ -51,3 +51,15 @@
 
 /* Smooth fields disable transition */
 fieldset { transition: opacity 0.25s cubic-bezier(0.32, 0.72, 0, 1); }
+
+/* Inputs siempre con texto blanco en dark mode */
+input, textarea, select {
+  color: inherit;
+  caret-color: #f4f4f5;
+}
+input::placeholder, textarea::placeholder {
+  color: #52525b;
+}
+input[type="date"], input[type="datetime-local"], input[type="time"] {
+  color-scheme: dark;
+}
