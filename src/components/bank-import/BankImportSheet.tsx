@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Upload, Loader2, CheckCircle2, AlertCircle, X, ChevronDown } from "lucide-react"
+import { Upload, Loader2, CheckCircle2, AlertCircle, ChevronDown } from "lucide-react"
 import { Sheet } from "@/components/Sheet"
 import { useAuth } from "@/hooks/useAuth"
 import { useCategories } from "@/hooks/useCategories"
