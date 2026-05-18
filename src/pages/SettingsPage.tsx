@@ -8,8 +8,9 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import {
   Mail, KeyRound, Coins, Flame, Users, UserPlus, Landmark,
-  Download, RotateCcw, LogOut, ChevronRight, Pencil, Sparkles,
+  Download, RotateCcw, LogOut, ChevronRight, Pencil, Sparkles, FileUp,
 } from "lucide-react"
+import { BankImportSheet } from "@/components/bank-import/BankImportSheet"
 import { NameModal } from "@/components/settings/NameModal"
 import { EmailModal } from "@/components/settings/EmailModal"
 import { PasswordModal } from "@/components/settings/PasswordModal"
@@ -87,6 +88,7 @@ export function SettingsPage() {
   const [humoOpen, setHumoOpen] = useState(false)
   const [resetOpen, setResetOpen] = useState(false)
   const [exporting, setExporting] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -187,6 +189,46 @@ export function SettingsPage() {
         <Row icon={UserPlus} label="Amigos" badge="Próximamente" disabled />
       </Section>
 
+      {/* ── Importar extracto ─────────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.08, duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+        className="relative rounded-2xl overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-400 via-yellow-400 to-orange-400 opacity-90" />
+        <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-white/20 blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-8 -left-8 w-36 h-36 rounded-full bg-orange-600/30 blur-2xl pointer-events-none" />
+
+        <div className="relative p-5 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-black/15 flex items-center justify-center shrink-0">
+            <FileUp size={22} className="text-white" />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-amber-900/70 mb-0.5">
+              Sin drama
+            </p>
+            <p className="text-base font-bold text-zinc-950 leading-snug">
+              Importá tu extracto bancario
+            </p>
+            <p className="text-xs text-amber-900/80 mt-0.5 leading-relaxed">
+              Sacalo de la app del banco, subilo acá y listo — la IA registra todo por vos.
+            </p>
+          </div>
+
+          <motion.button
+            onClick={() => setImportOpen(true)}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            className="shrink-0 bg-zinc-950 text-amber-300 font-bold text-xs px-4 py-2.5 rounded-xl shadow-lg"
+          >
+            Importar
+          </motion.button>
+        </div>
+      </motion.div>
+
+      {/* ── Conectá tu banco (coming soon) ────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
@@ -287,6 +329,12 @@ export function SettingsPage() {
         open={resetOpen} onClose={() => setResetOpen(false)}
         email={email}
         onReset={() => setRefreshKey(k => k + 1)}
+      />
+
+      <BankImportSheet
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onDone={() => setImportOpen(false)}
       />
 
     </div>
