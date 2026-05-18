@@ -132,12 +132,23 @@ export function Movements({ refreshKey: parentKey }: { refreshKey: number }) {
         ))}
       </div>
 
-      {loading && <p className="text-zinc-500 text-sm">Cargando...</p>}
+      {loading && (
+        <div className="space-y-2">
+          {[1,2,3,4,5].map(i => (
+            <div key={i} className="h-16 rounded-xl shimmer bg-zinc-900/60 border border-zinc-800/50" />
+          ))}
+        </div>
+      )}
 
       {!loading && filtered.length === 0 && (
-        <div className="text-center py-12 text-zinc-500">
-          <p className="text-sm">{filter === "all" ? "Aún no hay movimientos" : "Sin resultados"}</p>
-          {filter === "all" && <p className="text-xs mt-1">Tocá el botón + para empezar</p>}
+        <div className="flex flex-col items-center text-center py-16 gap-3">
+          <span className="text-4xl opacity-50">
+            {filter === "humo" ? "🔥" : filter === "savings" ? "🐷" : filter === "income" ? "💰" : filter === "expense" ? "💸" : "✨"}
+          </span>
+          <p className="text-sm font-medium text-zinc-300">
+            {filter === "all" ? "Aún no hay movimientos" : "Sin resultados"}
+          </p>
+          {filter === "all" && <p className="text-xs text-zinc-500 max-w-[16rem]">Tocá el botón + para registrar tu primer gasto o ingreso</p>}
         </div>
       )}
 

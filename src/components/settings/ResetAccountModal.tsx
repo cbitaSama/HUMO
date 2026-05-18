@@ -83,19 +83,19 @@ export function ResetAccountModal({ open, onClose, email, onReset }: Props) {
             ) : (
               <div className="grid grid-cols-2 gap-2">
                 <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-3">
-                  <p className="text-2xl font-bold tabular-nums">{counts.transactions}</p>
+                  <p className="text-2xl font-bold tabular-nums text-zinc-50">{counts.transactions}</p>
                   <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Movimientos</p>
                 </div>
                 <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-3">
-                  <p className="text-2xl font-bold tabular-nums">{counts.recurring}</p>
+                  <p className="text-2xl font-bold tabular-nums text-zinc-50">{counts.recurring}</p>
                   <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Recurrentes</p>
                 </div>
                 <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-3">
-                  <p className="text-2xl font-bold tabular-nums">{counts.debts}</p>
+                  <p className="text-2xl font-bold tabular-nums text-zinc-50">{counts.debts}</p>
                   <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Préstamos</p>
                 </div>
                 <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-3">
-                  <p className="text-2xl font-bold tabular-nums">{counts.groups}</p>
+                  <p className="text-2xl font-bold tabular-nums text-zinc-50">{counts.groups}</p>
                   <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Grupos</p>
                 </div>
               </div>

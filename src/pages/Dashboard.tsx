@@ -127,15 +127,16 @@ export function Dashboard({ refreshKey }: { refreshKey: number }) {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.05, ease: [0.32, 0.72, 0, 1] }}
-        className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 relative overflow-hidden"
+        className="rounded-2xl border border-zinc-800/80 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 md:p-7 relative overflow-hidden"
       >
         <div className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
              style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' /%3E%3C/svg%3E\")" }} />
-        <p className="text-sm text-zinc-500 mb-2 capitalize relative">Disponible · {monthName}</p>
-        <p className={`text-5xl font-bold tracking-tight relative ${stats.balance < 0 ? "text-red-400" : ""}`}>
-          {loading ? "..." : <AnimatedBs value={stats.balance} />}
+        <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-zinc-50/[0.02] blur-3xl pointer-events-none" />
+        <p className="text-xs font-medium text-zinc-500 uppercase tracking-[0.12em] mb-2.5 capitalize relative">Disponible · {monthName}</p>
+        <p className={`text-[2.75rem] md:text-5xl font-bold tracking-tight relative leading-none tabular-nums ${stats.balance < 0 ? "text-red-400" : "text-zinc-50"}`}>
+          {loading ? <span className="inline-block h-12 w-40 rounded-lg shimmer bg-zinc-800/40" /> : <AnimatedBs value={stats.balance} />}
         </p>
-        <p className="text-[11px] text-zinc-600 mt-2 relative">Ahorros ya están apartados</p>
+        <p className="text-[11px] text-zinc-600 mt-3 relative">Ahorros ya están apartados</p>
       </motion.div>
 
       {/* Stats: Ingresos, Gastos, Ahorrado */}
@@ -143,33 +144,33 @@ export function Dashboard({ refreshKey }: { refreshKey: number }) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
-        className="grid grid-cols-3 gap-3"
+        className="grid grid-cols-3 gap-2.5 md:gap-3"
       >
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-3 hover:border-zinc-700 transition-colors">
-          <div className="flex items-center gap-1 mb-1">
-            <TrendingUp size={11} className="text-emerald-400" />
-            <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Ingresos</p>
+        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900 p-3 md:p-4 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center gap-1 mb-1.5">
+            <TrendingUp size={11} className="text-emerald-400 shrink-0" />
+            <p className="text-[10px] text-zinc-500 uppercase tracking-wider truncate">Ingresos</p>
           </div>
-          <p className="text-base md:text-xl font-bold text-emerald-400 tabular-nums">
-            {loading ? "..." : <AnimatedBs value={stats.income} />}
+          <p className="text-[15px] md:text-xl font-bold text-emerald-400 tabular-nums truncate">
+            {loading ? <span className="inline-block h-5 w-16 rounded shimmer bg-zinc-800/50" /> : <AnimatedBs value={stats.income} />}
           </p>
         </div>
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-3 hover:border-zinc-700 transition-colors">
-          <div className="flex items-center gap-1 mb-1">
-            <TrendingDown size={11} className="text-red-400" />
-            <p className="text-[10px] text-zinc-500 uppercase tracking-wider">Gastos</p>
+        <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900 p-3 md:p-4 hover:border-zinc-700 transition-colors">
+          <div className="flex items-center gap-1 mb-1.5">
+            <TrendingDown size={11} className="text-red-400 shrink-0" />
+            <p className="text-[10px] text-zinc-500 uppercase tracking-wider truncate">Gastos</p>
           </div>
-          <p className="text-base md:text-xl font-bold text-red-400 tabular-nums">
-            {loading ? "..." : <AnimatedBs value={stats.realExpenseTotal} />}
+          <p className="text-[15px] md:text-xl font-bold text-red-400 tabular-nums truncate">
+            {loading ? <span className="inline-block h-5 w-16 rounded shimmer bg-zinc-800/50" /> : <AnimatedBs value={stats.realExpenseTotal} />}
           </p>
         </div>
-        <div className="rounded-2xl border border-emerald-900/40 bg-emerald-950/20 p-3 hover:border-emerald-800/60 transition-colors">
-          <div className="flex items-center gap-1 mb-1">
-            <PiggyBank size={11} className="text-emerald-300" />
-            <p className="text-[10px] text-emerald-300/80 uppercase tracking-wider">Ahorrado</p>
+        <div className="rounded-2xl border border-emerald-900/40 bg-emerald-950/20 p-3 md:p-4 hover:border-emerald-800/60 transition-colors">
+          <div className="flex items-center gap-1 mb-1.5">
+            <PiggyBank size={11} className="text-emerald-300 shrink-0" />
+            <p className="text-[10px] text-emerald-300/80 uppercase tracking-wider truncate">Ahorrado</p>
           </div>
-          <p className="text-base md:text-xl font-bold text-emerald-300 tabular-nums">
-            {loading ? "..." : <AnimatedBs value={savingsTotal} />}
+          <p className="text-[15px] md:text-xl font-bold text-emerald-300 tabular-nums truncate">
+            {loading ? <span className="inline-block h-5 w-16 rounded shimmer bg-emerald-900/30" /> : <AnimatedBs value={savingsTotal} />}
           </p>
         </div>
       </motion.div>
@@ -210,10 +211,17 @@ export function Dashboard({ refreshKey }: { refreshKey: number }) {
           <p className="text-sm font-medium text-zinc-300 mb-1">¿En qué se va tu plata?</p>
           <p className="text-xs text-zinc-500 mb-4">Sin contar ahorros · este mes</p>
           {loading ? (
-            <div className="h-64 flex items-center justify-center text-zinc-600 text-sm">Cargando...</div>
+            <div className="h-64 flex flex-col items-center justify-center gap-3">
+              <div className="w-32 h-32 rounded-full shimmer bg-zinc-800/40" />
+              <div className="space-y-2 w-full mt-2">
+                {[1,2,3].map(i => <div key={i} className="h-3 rounded shimmer bg-zinc-800/40" />)}
+              </div>
+            </div>
           ) : stats.byCategory.length === 0 ? (
-            <div className="h-32 flex items-center justify-center text-zinc-600 text-sm">
-              Sin gastos este mes
+            <div className="h-40 flex flex-col items-center justify-center gap-2 text-center">
+              <span className="text-3xl opacity-50">🌱</span>
+              <p className="text-sm text-zinc-400 font-medium">Sin gastos este mes</p>
+              <p className="text-xs text-zinc-600 max-w-[14rem]">Cuando registres gastos vas a ver acá en qué se va tu plata</p>
             </div>
           ) : (
             <>
@@ -256,8 +264,8 @@ export function Dashboard({ refreshKey }: { refreshKey: number }) {
             <p className="text-xs text-zinc-500 mb-3 relative">
               Tus gastos chicos &lt; {formatBs(humoThreshold)}
             </p>
-            <p className="text-3xl font-bold tracking-tight text-orange-400 relative">
-              {loading ? "..." : <AnimatedBs value={stats.humoTotal} />}
+            <p className="text-3xl font-bold tracking-tight text-orange-400 relative tabular-nums">
+              {loading ? <span className="inline-block h-8 w-24 rounded shimmer bg-orange-900/30" /> : <AnimatedBs value={stats.humoTotal} />}
             </p>
             <p className="text-xs text-zinc-500 mt-1 relative">
               {stats.humoCount} {stats.humoCount === 1 ? "compra chiquita" : "compras chiquitas"} este mes

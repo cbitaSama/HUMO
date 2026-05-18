@@ -93,6 +93,7 @@ export function BankImportSheet({ open, onClose, onDone }: Props) {
   async function doImport() {
     if (!user) return
     setStep("importing")
+    const selfPayer = payers.find(p => p.is_self && !p.archived_at)
     const toImport = applyAnswers(txs).filter(t => t.include)
     const rows = toImport.map(t => ({
       user_id: user.id,
@@ -101,7 +102,7 @@ export function BankImportSheet({ open, onClose, onDone }: Props) {
       title: t.title.trim() || t.description.slice(0, 60),
       note: t.description !== t.title ? t.description : null,
       category_id: t.category_id ?? null,
-      payer_id: null,
+      payer_id: t.kind === "expense" ? (selfPayer?.id ?? null) : null,
       occurred_at: new Date(t.date + "T12:00:00").toISOString(),
     }))
 

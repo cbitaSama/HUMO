@@ -23,7 +23,7 @@ type Tab = "dashboard" | "movements" | "recurring" | "payers" | "debts" | "savin
 
 const tabs = [
   { id: "dashboard" as Tab, label: "Inicio",      shortLabel: "Inicio",  Icon: LayoutDashboard },
-  { id: "movements" as Tab, label: "Movimientos", shortLabel: "Mov.",    Icon: ArrowLeftRight },
+  { id: "movements" as Tab, label: "Movimientos", shortLabel: "Movs",    Icon: ArrowLeftRight },
   { id: "savings"   as Tab, label: "Ahorros",     shortLabel: "Ahorros", Icon: PiggyBank },
   { id: "recurring" as Tab, label: "Recurrentes", shortLabel: "Auto",    Icon: RefreshCcw },
   { id: "payers"    as Tab, label: "Pagadores",   shortLabel: "Pagad.",  Icon: Users },
@@ -63,12 +63,12 @@ export function AppLayout() {
   return (
     <div className="flex h-svh bg-zinc-950 text-zinc-50 overflow-hidden">
 
-      <aside className="hidden md:flex flex-col w-64 border-r border-zinc-800 bg-zinc-950 shrink-0 relative">
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-orange-500/[0.04] to-transparent pointer-events-none" />
+      <aside className="hidden md:flex flex-col w-64 border-r border-zinc-800/70 bg-zinc-950 shrink-0 relative">
+        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-orange-500/[0.05] via-orange-500/[0.02] to-transparent pointer-events-none" />
 
-        <div className="px-6 py-8 border-b border-zinc-800 relative">
-          <h1 className="text-3xl font-bold tracking-tight">Humo</h1>
-          <p className="mt-1 text-sm text-zinc-500">Hola, {firstName}</p>
+        <div className="px-6 pt-9 pb-7 border-b border-zinc-800/70 relative">
+          <h1 className="text-[2rem] font-bold tracking-tight leading-none">Humo</h1>
+          <p className="mt-2 text-xs text-zinc-500 tracking-wide">Hola, {firstName}</p>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
@@ -110,7 +110,7 @@ export function AppLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto pb-24 md:pb-0">
+      <main className="flex-1 overflow-y-auto pt-[env(safe-area-inset-top)] pb-[calc(env(safe-area-inset-bottom)+5.5rem)] md:pb-0">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeTab}
@@ -131,15 +131,18 @@ export function AppLayout() {
         onSaved={() => setRefreshKey(k => k + 1)}
       />
 
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950/95 backdrop-blur-md border-t border-zinc-800 flex z-30">
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 bg-zinc-950/85 backdrop-blur-xl border-t border-zinc-800/80 flex z-30"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         {tabs.filter(t => mobileMain.includes(t.id)).map(({ id, shortLabel, Icon }) => (
           <motion.button
             key={id}
             onClick={() => pickTab(id)}
             whileTap={{ scale: 0.92 }}
             className={cn(
-              "flex-1 flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-colors relative",
-              activeTab === id ? "text-zinc-50" : "text-zinc-600"
+              "flex-1 flex flex-col items-center gap-1 py-2.5 text-[10px] font-medium transition-colors relative min-h-[56px]",
+              activeTab === id ? "text-zinc-50" : "text-zinc-500"
             )}
           >
             {activeTab === id && (
@@ -149,7 +152,7 @@ export function AppLayout() {
                 transition={{ type: "spring", stiffness: 500, damping: 35 }}
               />
             )}
-            <Icon size={20} strokeWidth={activeTab === id ? 2.5 : 1.8} />
+            <Icon size={21} strokeWidth={activeTab === id ? 2.4 : 1.8} />
             {shortLabel}
           </motion.button>
         ))}
@@ -157,11 +160,11 @@ export function AppLayout() {
           onClick={() => setMoreOpen(true)}
           whileTap={{ scale: 0.92 }}
           className={cn(
-            "flex-1 flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-colors",
-            (activeTab === "recurring" || activeTab === "payers" || activeTab === "settings") ? "text-zinc-50" : "text-zinc-600"
+            "flex-1 flex flex-col items-center gap-1 py-2.5 text-[10px] font-medium transition-colors min-h-[56px]",
+            (activeTab === "recurring" || activeTab === "payers" || activeTab === "settings") ? "text-zinc-50" : "text-zinc-500"
           )}
         >
-          <MoreHorizontal size={20} strokeWidth={1.8} />
+          <MoreHorizontal size={21} strokeWidth={1.8} />
           Más
         </motion.button>
       </nav>

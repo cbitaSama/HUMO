@@ -62,11 +62,20 @@ export function AuthPage() {
     password.length >= 4 ? "medium" : "weak"
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center bg-zinc-950 px-6 text-zinc-50">
-      <div className="w-full max-w-sm">
+    <div
+      className="relative flex min-h-svh flex-col items-center justify-center bg-zinc-950 px-6 text-zinc-50 overflow-hidden"
+      style={{
+        paddingTop: "env(safe-area-inset-top)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[40vh] bg-gradient-to-b from-orange-500/[0.06] via-orange-500/[0.02] to-transparent" />
+      <div className="pointer-events-none absolute -bottom-32 left-1/2 -translate-x-1/2 w-[480px] h-[480px] rounded-full bg-orange-500/[0.04] blur-[120px]" />
+
+      <div className="relative w-full max-w-sm">
         <div className="mb-10 text-center">
-          <h1 className="text-7xl font-bold tracking-tight">Humo</h1>
-          <p className="mt-2 text-sm text-zinc-500">No dejes que tu plata se haga humo</p>
+          <h1 className="text-6xl sm:text-7xl font-bold tracking-tight">Humo</h1>
+          <p className="mt-3 text-sm text-zinc-500">No dejes que tu plata se haga humo</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -146,7 +155,7 @@ export function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-zinc-50 py-3 text-base font-semibold text-zinc-950 transition active:scale-[0.98] disabled:opacity-50 mt-2"
+            className="w-full rounded-xl bg-zinc-50 py-3.5 text-base font-semibold text-zinc-950 transition active:scale-[0.98] disabled:opacity-50 mt-2 shadow-lg shadow-zinc-50/10 hover:shadow-zinc-50/20"
           >
             {loading ? "..." : mode === "signin" ? "Entrar" : "Crear cuenta"}
           </button>

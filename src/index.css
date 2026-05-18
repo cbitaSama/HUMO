@@ -69,3 +69,34 @@ textarea::placeholder {
   -webkit-text-fill-color: #71717a;
   opacity: 1;
 }
+
+/* Accessible focus ring — visible only via keyboard nav */
+:focus-visible {
+  outline: 2px solid rgba(250, 250, 250, 0.6);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+button:focus-visible,
+a:focus-visible {
+  outline-offset: 3px;
+}
+
+/* iOS-style smooth scrolling + better touch behavior */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Prevent layout shift on number animations */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Subtle elevation utility */
+.elevation-1 { box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.4); }
+.elevation-2 { box-shadow: 0 4px 6px rgba(0,0,0,0.3), 0 2px 4px rgba(0,0,0,0.4); }
