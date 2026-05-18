@@ -6,9 +6,11 @@ import {
   LayoutDashboard, ArrowLeftRight, RefreshCcw, Users, Handshake,
   PiggyBank, Settings, LogOut, MoreHorizontal, X,
 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { pageVariants, easeOut, modalBackdrop, modalSheet } from "@/lib/motion"
+import { ensureRequiredCategories } from "@/lib/seed-categories"
+import { useQueryClient } from "@tanstack/react-query"
 import { Dashboard } from "@/pages/Dashboard"
 import { Movements } from "@/pages/Movements"
 import { Recurring } from "@/pages/Recurring"
@@ -52,6 +54,14 @@ export function AppLayout() {
   const [refreshKey, setRefreshKey] = useState(0)
   const { user } = useAuth()
   const { profile } = useProfile(user?.id)
+  const qc = useQueryClient()
+
+  useEffect(() => {
+    if (!user?.id) return
+    ensureRequiredCategories(user.id).then(() => {
+      qc.invalidateQueries({ queryKey: ["categories", user.id] })
+    })
+  }, [user?.id, qc])
 
   const firstName = profile?.display_name?.split(" ")[0] ?? user?.email?.split("@")[0] ?? ""
 

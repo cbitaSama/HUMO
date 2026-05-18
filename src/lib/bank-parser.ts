@@ -79,7 +79,17 @@ Reglas estrictas:
 - NO preguntes sobre cosas obvias
 - amounts siempre positivos; usa "kind" para la dirección
 - category_name debe ser exactamente igual a uno de: ${categoryList} — o null si ninguna aplica
-- Si hay transferencias entre cuentas propias, márcalas como income o exclúyelas según el contexto`
+- Si hay transferencias entre cuentas propias, márcalas como income o exclúyelas según el contexto
+
+SALDO ANTERIOR / INICIAL — IMPORTANTE:
+- Si el extracto muestra un "saldo anterior", "saldo inicial", "balance forward", "saldo previo" o equivalente al INICIO del período, inclúyelo como la PRIMERA transacción del array con:
+  - kind: "income"
+  - title: "Saldo anterior"
+  - amount: el monto del saldo (siempre positivo)
+  - date: la fecha de inicio del período del extracto
+  - category_name: null
+  - confidence: "high"
+- Si no aparece un saldo anterior en el extracto, simplemente no lo incluyas. NO lo inventes.`
 
   let parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }>
 
